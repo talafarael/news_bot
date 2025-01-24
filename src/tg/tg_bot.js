@@ -3,10 +3,12 @@ import { scrape } from "../web_scrap/scrap_index.js";
 import { scrapePostDetails } from "../web_scrap/prepare_one_post.js";
 import { config } from "../config.js";
 import { Client, GatewayIntentBits } from "discord.js";
-
+import { extractPage } from "../web_scrap/article_scrap.js";
 const token = process.env.TOKEN;
 const bot = new TelegramBot(token, { polling: true });
-
+extractPage(
+  "https://app.daily.dev/posts/17-tips-from-a-senior-react-developer-shjk0puhh",
+);
 let scrapedArticles = [];
 
 const client = new Client({

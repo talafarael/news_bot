@@ -31,65 +31,7 @@ async function extractFullText(page) {
     return null;
   }
 }
-async function extractLinkеToArticle(page) {
-  let linkState = false;
 
-  const linkArticle = await page.evaluate(() => {
-    const links = Array.from(document.querySelectorAll("a"));
-    const fullLink = links.find((link) =>
-      link.href.includes("https://api.daily.dev/r"),
-    );
-    return fullLink ? fullLink.href : null;
-  });
-  console.log(linkArticle);
-}
-async function extractPage(url) {
-  if (!url) {
-    throw new Error("URL is required.");
-  }
-  try {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-
-    await page.goto(url, { waitUntil: "networkidle2" });
-    console.log(page);
-    extractLinkеToArticle(page);
-  } catch (error) {
-    console.error("Error while scraping post details:", error);
-    throw new Error("Failed to scrape the post details.");
-  }
-}
-async function extractArticleText(url) {
-  if (!url) {
-    throw new Error("URL is required.");
-  }
-  try {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-
-    await page.goto(url, { waitUntil: "networkidle2" });
-    console.log(page);
-
-    const currentUrl = await page.url();
-    console.log("Текущий URL:", currentUrl);
-    const text = await page.evaluate(() => {
-      const hElement = document.querySelector(
-        ".mt-2.mb-8.font-mono.text-2xl.font-medium",
-      );
-      if (!hElement) return null;
-
-      return hElement.innerText.trim();
-    });
-    console.log(text);
-  } catch (error) {
-    console.error("Error while scraping post details:", error);
-    throw new Error("Failed to scrape the post details.");
-  }
-}
-extractPage(
-  "https://app.daily.dev/posts/conditional-react-hooks-pattern-6gsgvtyal",
-);
-extractArticleText("https://api.daily.dev/r/6GsgVtYaL");
 /**
  * Extracts the likes and comments of the article.
  * @param {puppeteer.Page} page - Puppeteer page instance.
