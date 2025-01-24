@@ -4,6 +4,19 @@ async function extractTextFromMedium(page) {
 }
 async function extractTextFromDev(page) {
   console.log("aa");
+
+  const text = await page.evaluate(() => {
+    let arr = [];
+
+    const article = document.getElementById("article-body");
+
+    article.querySelectorAll("*").forEach((element) => {
+      const images = document.querySelectorAll("img");
+      images.forEach((img) => arr.push(img.src));
+    });
+    return arr;
+  });
+  console.log(text);
 }
 
 const obj = {
