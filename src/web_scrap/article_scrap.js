@@ -8,11 +8,22 @@ async function extractTextFromDev(page) {
   const text = await page.evaluate(() => {
     let arr = [];
 
+    const seenTexts = new Set();
     const article = document.getElementById("article-body");
 
     article.querySelectorAll("*").forEach((element) => {
-      const images = document.querySelectorAll("img");
-      images.forEach((img) => arr.push(img.src));
+      const elementText = element.innerText;
+      if (elementText && !seenTexts.has(elementText)) {
+        arr.push({ text: elementText });
+        seenTexts.add(elementText);
+      }
+
+      const images = element.querySelectorAll("img");
+      images.forEach((img) => {
+        if (img.width > 200 && img.height > 200) {
+          arr.push({ img: img.src });
+        }
+      });
     });
     return arr;
   });
@@ -59,7 +70,10 @@ async function extractArticleText(url) {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(
+      "https://dev.to/sonaykara/why-virtual-dom-faster-rendering-and-performance-1cjh?ref=dailydev",
+      { waitUntil: "networkidle2" },
+    );
     console.log(page);
     const currentUrl = await page.url();
     console.log("Current URL:", currentUrl);
